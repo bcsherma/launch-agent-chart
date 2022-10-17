@@ -1,0 +1,68 @@
+apiVersion: v1
+data:
+  launch-config.yaml: |
+    {{- toYaml $.Values.config | nindent 4 }}
+kind: ConfigMap
+metadata:
+  name: wandb-launch-configmap
+  namespace: wandb
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wandb-api-key
+  namespace: wandb
+type: kubernetes.io/basic-auth
+stringData:
+  password: {{ required "Please provide a W&B API key under .Values.secret" .Values.secret }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: launch-agent
+  namespace: wandb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: launch-agent
+  template:
+    metadata:
+      labels:
+        app: launch-agent
+    spec:
+      serviceAccountName: wandb-launch-serviceaccount
+      containers:
+        - name: launch-agent
+          image: {{ .Values.image }}
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+          env:
+            - name: WANDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wandb-api-key
+                  key: password
+            - name: WANDB_PROJECT
+              value: {{ required "Please provide W&B project under .Values.project" .Values.project }}
+            - name: WANDB_ENTITY
+              value: {{ required "Please provide W&B entity under .Values.entity" .Values.entity }}
+          volumeMounts:
+            - name: wandb-launch-config
+              mountPath: /home/launch_agent/.config/wandb
+              readOnly: true
+      volumes:
+        - name: wandb-launch-config
+          configMap:
+            name: wandb-launch-configmap

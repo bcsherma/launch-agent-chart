@@ -1,0 +1,5 @@
+apiVersion: v2
+name: launch-agent
+description: Weights & Biases launch agent helm chart
+type: application
+version: 0.0.0

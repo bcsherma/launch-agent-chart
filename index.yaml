@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  launch-agent:
+  - apiVersion: v2
+    created: "2022-10-17T11:06:46.244288-07:00"
+    description: Weights & Biases launch agent helm chart
+    digest: 4d703bffc16779490af88dea9588979157b977b47829b91800dbb3465197f712
+    name: launch-agent
+    type: application
+    urls:
+    - bcanfieldsherman.github.io/launch-agent-chart/launch-agent-0.0.0.tgz
+    version: 0.0.0
+generated: "2022-10-17T11:06:46.240131-07:00"

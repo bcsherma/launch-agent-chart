@@ -1,0 +1,23 @@
+secret: null
+project: null
+entity: null
+image: bcanfieldsherman/agent:nobuild
+config:
+  base_url: https://api.wandb.ai
+  max_jobs: -1
+  registry:
+    url: null
+    ecr-provider: null
+    credentials:
+      secret-name: null 
+      secret-mount-path: null 
+  build:
+    type: noop
+    cloud-provider: null
+    credentials: 
+      secret-name: null 
+      secret-mount-path: null 
+    build-context-store: null
+  runner:
+    type: kubernetes
+    namespace: wandb
